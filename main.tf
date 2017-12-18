@@ -43,7 +43,7 @@ resource "null_resource" "rancher-server-provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo docker run -d --restart=unless-stopped -p ${var.rancher_server_port}:${var.rancher_server_port} -e \"CATTLE_API_HOST=http://${module.rancher_server_vm.rancher_server_private_ip}:${var.rancher_server_port}\" rancher/server:stable",
+      "sudo docker run -d --restart=unless-stopped -p ${var.rancher_server_port}:${var.rancher_server_port} -e \"CATTLE_API_HOST=http://${module.rancher_server_vm.rancher_server_public_ip}:${var.rancher_server_port}\" rancher/server:stable",
     ]
   }
 }
