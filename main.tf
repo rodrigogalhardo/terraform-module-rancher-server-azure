@@ -7,7 +7,9 @@ provider "azurerm" {
 }
 
 module "rancher_server_vm" {
-  source = "github.com/nespresso/Terraform-module-Azure-VM-for-rancher-server"
+
+  #source = "github.com/nespresso/terraform-module-rancher-server-azure-vm"
+  source = "../terraform-module-rancher-server-azure-vm"
 
   client_id = "${var.client_id}"
   client_secret = "${var.client_secret}"
@@ -35,7 +37,7 @@ resource "null_resource" "rancher-server-provision" {
   }
 
   connection {
-    host = "${module.rancher_server_vm.rancher_server_public_ip}"
+    host = "${module.rancher_server_vm.rancher_server_ip}"
     private_key = "${file("${var.ssh_private_key_file_path}")}"
     type = "ssh"
     user = "${var.ssh_username}"
@@ -43,7 +45,7 @@ resource "null_resource" "rancher-server-provision" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo docker run -d --restart=unless-stopped -p ${var.rancher_server_port}:${var.rancher_server_port} -e \"CATTLE_API_HOST=http://${module.rancher_server_vm.rancher_server_public_ip}:${var.rancher_server_port}\" rancher/server:stable",
+      "sudo docker run -d --restart=unless-stopped -p ${var.rancher_server_port}:${var.rancher_server_port} -e \"CATTLE_API_HOST=http://${module.rancher_server_vm.rancher_server_ip}:${var.rancher_server_port}\" ${var.rancher_docker_image}",
     ]
   }
 }

@@ -29,18 +29,27 @@ variable "location" {
 variable "rancher_sever_image_id" {
   description = "Virtual Machine Image ID for Rancher server"
 }
+
 variable "rancher_server_name" {
   default = "server" // Concatenated with ${var.resource_prefix_name}
   description = "Rancher server name"
 }
+
 variable "rancher_server_port" {
   default = 8080
   description = "Port on which Rancher server will listen"
 }
+
+variable "rancher_docker_image" {
+  default = "rancher/server:stable"
+  description = "The rancher server image"
+}
+
 variable "rancher_server_private_ip" {
   default = "10.3.1.4"
   description = "Rancher server private IP"
 }
+
 variable "rancher_server_vm_size" {
   default = "Standard_DS1_v2"
   description = "Rancher server VM size on Azure"

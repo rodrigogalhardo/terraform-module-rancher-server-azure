@@ -65,4 +65,5 @@ Outputs
 Authors
 =======
 
-nicolas.cheutin@nestle.com
+- nicolas.cheutin@nestle.com
+- valentin.delaye@nestle.com
