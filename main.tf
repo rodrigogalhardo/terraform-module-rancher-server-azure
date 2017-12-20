@@ -31,21 +31,26 @@ module "rancher_server_vm" {
   vnet_address_space = "${var.vnet_address_space}"
 }
 
+# The template file for rancher server provisioning
+data "template_file" "rancher-server-provision-script" {
+  template = "${file("${path.module}/scripts/rancher-server-provision.tpl")}"
+  vars {
+    ssh_username = "${var.ssh_username}"
+    ssh_port = "22"
+    rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
+    rancher_server_port = "${var.rancher_server_port}"
+    rancher_server_docker_image = "${var.rancher_docker_image}"
+  }
+}
+
 resource "null_resource" "rancher-server-provision" {
   triggers {
     rancher_server_id = "${module.rancher_server_vm.rancher_server_id}"
   }
 
-  connection {
-    host = "${module.rancher_server_vm.rancher_server_ip}"
-    private_key = "${file("${var.ssh_private_key_file_path}")}"
-    type = "ssh"
-    user = "${var.ssh_username}"
+  provisioner "local-exec" {
+    command = "echo ${data.template_file.rancher-server-provision-script.rendered}"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo docker run -d --restart=unless-stopped -p ${var.rancher_server_port}:${var.rancher_server_port} -e \"CATTLE_API_HOST=http://${module.rancher_server_vm.rancher_server_ip}:${var.rancher_server_port}\" ${var.rancher_docker_image}",
-    ]
-  }
+  depends_on = ["data.template_file.rancher-server-provision-script"]
 }

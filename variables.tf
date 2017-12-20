@@ -74,6 +74,7 @@ variable "security_group_name" {
 variable "subnet_id" {
   description = "Subnet ID where to put Rancher server"
 }
+
 variable "vnet_address_space" {
   description = "The address space that is used the virtual network"
 }
