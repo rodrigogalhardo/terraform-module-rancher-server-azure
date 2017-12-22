@@ -45,6 +45,14 @@ variable "rancher_docker_image" {
   description = "The rancher server image"
 }
 
+variable "rancher_access_key" {
+  description = "Rancher server API access key"
+}
+
+variable "rancher_secret_key" {
+  description = "Rancher server API secret key"
+}
+
 variable "rancher_server_private_ip" {
   default = "10.3.1.4"
   description = "Rancher server private IP"
