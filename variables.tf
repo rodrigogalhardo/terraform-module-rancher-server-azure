@@ -35,14 +35,27 @@ variable "rancher_server_name" {
   description = "Rancher server name"
 }
 
-variable "rancher_server_port" {
-  default = 8080
-  description = "Port on which Rancher server will listen"
+// External DNS
+variable "rancher_domain" {
+  description = "The rancher domain for the DNS zone"
+}
+
+// DNS zone
+variable "rancher_dns_zone" {
+  description = "The rancher DNS zone"
+}
+
+variable "rancher_dns_zone_resource_group" {
+  description = "The resource group for the DNS zone"
 }
 
 variable "rancher_docker_image" {
   default = "rancher/server:stable"
   description = "The rancher server image"
+}
+
+variable "rancher_reverse_proxy_docker_image" {
+  description = "The rerverse proxy docker image"
 }
 
 variable "rancher_access_key" {

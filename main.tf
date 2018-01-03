@@ -10,13 +10,14 @@ module "rancher_server_vm" {
 
   #source = "github.com/nespresso/terraform-module-rancher-server-azure-vm"
   source = "../terraform-module-rancher-server-azure-vm"
-
+  rancher_domain = "${var.rancher_domain}"
+  rancher_dns_zone = "${var.rancher_dns_zone}"
+  rancher_dns_zone_resource_group = "${var.rancher_dns_zone_resource_group}"
   client_id = "${var.client_id}"
   client_secret = "${var.client_secret}"
   location = "${var.location}"
   rancher_sever_image_id = "${var.rancher_sever_image_id}"
   rancher_server_name = "${var.rancher_server_name}"
-  rancher_server_port = "${var.rancher_server_port}"
   rancher_server_private_ip = "${var.rancher_server_private_ip}"
   rancher_server_vm_size = "${var.rancher_server_vm_size}"
   resource_group_name = "${var.resource_group_name}"
@@ -31,6 +32,40 @@ module "rancher_server_vm" {
   vnet_address_space = "${var.vnet_address_space}"
 }
 
+# The template file for docker-compose
+data "template_file" "rancher-server-docker-compose" {
+  template = "${file("${path.module}/scripts/docker-compose.tpl")}"
+  vars {
+    rancher_fqdn = "${module.rancher_server_vm.rancher_fqdn}"
+    rancher_api_url = "${module.rancher_server_vm.rancher_api_url}"
+    rancher_server_docker_image = "${var.rancher_docker_image}"
+    rancher_reverse_proxy_docker_image = "${var.rancher_reverse_proxy_docker_image}"
+  }
+
+
+}
+
+data "template_file" "rancher-server-copy-files" {
+  template = "${file("${path.module}/scripts/rancher-server-copy-files.tpl")}"
+  vars {
+    ssh_username = "${var.ssh_username}"
+    ssh_port = "22"
+    rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
+    docker_compose_content = "${data.template_file.rancher-server-docker-compose.rendered}"
+  }
+}
+
+resource "null_resource" "rancher-server-render-install-docker-compose-file" {
+
+  provisioner "local-exec" {
+    command = "echo ${data.template_file.rancher-server-copy-files.rendered}"
+  }
+
+  depends_on = ["data.template_file.rancher-server-docker-compose", "data.template_file.rancher-server-copy-files"]
+
+}
+
+
 # The template file for rancher server provisioning
 data "template_file" "rancher-server-provision-script" {
   template = "${file("${path.module}/scripts/rancher-server-provision.tpl")}"
@@ -38,8 +73,6 @@ data "template_file" "rancher-server-provision-script" {
     ssh_username = "${var.ssh_username}"
     ssh_port = "22"
     rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
-    rancher_server_port = "${var.rancher_server_port}"
-    rancher_server_docker_image = "${var.rancher_docker_image}"
   }
 }
 
