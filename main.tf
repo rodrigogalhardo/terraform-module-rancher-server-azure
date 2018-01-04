@@ -45,26 +45,13 @@ data "template_file" "rancher-server-docker-compose" {
 
 }
 
-data "template_file" "rancher-server-copy-files" {
-  template = "${file("${path.module}/scripts/rancher-server-copy-files.tpl")}"
+# Template file for docker daemon
+data "template_file" "rancher-server-docker-daemon-json" {
+  template = "${file("${path.module}/scripts/daemon.json.tpl")}"
   vars {
-    ssh_username = "${var.ssh_username}"
-    ssh_port = "22"
-    rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
-    docker_compose_content = "${data.template_file.rancher-server-docker-compose.rendered}"
+    docker_insecure_registries = "${var.docker_insecure_registries}"
   }
 }
-
-resource "null_resource" "rancher-server-render-install-docker-compose-file" {
-
-  provisioner "local-exec" {
-    command = "echo ${data.template_file.rancher-server-copy-files.rendered}"
-  }
-
-  depends_on = ["data.template_file.rancher-server-docker-compose", "data.template_file.rancher-server-copy-files"]
-
-}
-
 
 # The template file for rancher server provisioning
 data "template_file" "rancher-server-provision-script" {
@@ -73,6 +60,8 @@ data "template_file" "rancher-server-provision-script" {
     ssh_username = "${var.ssh_username}"
     ssh_port = "22"
     rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
+    docker_compose_content = "${data.template_file.rancher-server-docker-compose.rendered}"
+    docker_daemon_json_content = "${data.template_file.rancher-server-docker-daemon-json.rendered}"
   }
 }
 
@@ -85,5 +74,10 @@ resource "null_resource" "rancher-server-provision" {
     command = "echo ${data.template_file.rancher-server-provision-script.rendered}"
   }
 
-  depends_on = ["data.template_file.rancher-server-provision-script"]
+
+  depends_on = [
+    "data.template_file.rancher-server-provision-script",
+    "data.template_file.rancher-server-docker-compose",
+    "data.template_file.rancher-server-docker-daemon-json"
+  ]
 }

@@ -49,6 +49,11 @@ variable "rancher_dns_zone_resource_group" {
   description = "The resource group for the DNS zone"
 }
 
+variable "docker_insecure_registries" {
+  default = "[]",
+  description = "List of insecure docker registries"
+}
+
 variable "rancher_docker_image" {
   default = "rancher/server:stable"
   description = "The rancher server image"
