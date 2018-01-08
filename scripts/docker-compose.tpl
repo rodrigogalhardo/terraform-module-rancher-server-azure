@@ -20,6 +20,9 @@ services:
   nginx:
     image: ${rancher_reverse_proxy_docker_image}
     restart: always
+    volumes:
+      - /etc/ssl/cert.crt:/etc/ssl/cert.crt
+      - /etc/ssl/key.pem:/etc/ssl/key.pem
     environment:
       server_host: "${rancher_fqdn}"
       backend_host: "rancher"

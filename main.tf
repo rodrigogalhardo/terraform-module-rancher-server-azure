@@ -40,6 +40,8 @@ data "template_file" "rancher-server-docker-compose" {
     rancher_api_url = "${module.rancher_server_vm.rancher_api_url}"
     rancher_server_docker_image = "${var.rancher_docker_image}"
     rancher_reverse_proxy_docker_image = "${var.rancher_reverse_proxy_docker_image}"
+    rancher_ssl_key_file_path = "${var.rancher_ssl_key_file_path}"
+    rancher_ssl_certificate_file_path = "${var.rancher_ssl_certificate_file_path}"
   }
 
 

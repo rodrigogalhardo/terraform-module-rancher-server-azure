@@ -93,6 +93,14 @@ variable "ssh_username" {
   description = "SSH username"
 }
 
+// SSL certificate
+variable "rancher_ssl_certificate_name" {
+  default = "default"
+}
+
+variable "rancher_ssl_certificate_file_path" {}
+variable "rancher_ssl_key_file_path" {}
+
 //Network
 variable "security_group_name" {
   description = "Security group name on which to add security rules"

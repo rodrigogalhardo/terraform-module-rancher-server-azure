@@ -2,14 +2,23 @@
 
 set -x
 
-# Copy files
-echo '${docker_compose_content}' > /tmp/docker-compose.yml
-echo '${docker_daemon_json_content}' > /tmp/daemon.json
+# Create file from templates
+docker_compose=$(mktemp)
+docker_daemon=$(mktemp)
+echo '${docker_compose_content}' > ${docker_compose}
+echo '${docker_daemon_json_content}' > ${docker_daemon}
+
+# ssl certificates
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P ${ssh_port} ${rancher_ssl_key_file_path} \
+ ${ssh_username}@${rancher_server_ip}:/etc/ssl/key.pem
+
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P ${ssh_port} ${rancher_ssl_certificate_file_path} \
+ ${ssh_username}@${rancher_server_ip}:/etc/ssl/cert.crt
 
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P ${ssh_port} /tmp/docker-compose.yml \
  ${ssh_username}@${rancher_server_ip}:
 
- scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P ${ssh_port} /tmp/daemon.json \
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P ${ssh_port} /tmp/daemon.json \
   ${ssh_username}@${rancher_server_ip}:
 
 # Move daemon json to docker
