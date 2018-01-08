@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+
+# Install docker compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose \
+ && sudo chmod +x /usr/local/bin/docker-compose
+
+# Install SSL certificates
+sudo mkdir -p /etc/ssl
+sudo mv ~/bundle.pem ~/cert.crt
+sudo mv ~/server-key.pem ~/key.pem
+sudo mv ~/cert.crt /etc/ssl/
+sudo mv ~/key.pem /etc/ssl/
+
+# Install docker configuration
+sudo mv daemon.json /etc/docker
+sudo service docker restart
+
+# Start rancher server composition
+sudo /usr/local/bin/docker-compose pull
+sudo /usr/local/bin/docker-compose stop nginx && sudo /usr/local/bin/docker-compose rm nginx &&
+sudo /usr/local/bin/docker-compose up -d

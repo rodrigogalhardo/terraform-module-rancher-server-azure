@@ -40,8 +40,6 @@ data "template_file" "rancher-server-docker-compose" {
     rancher_api_url = "${module.rancher_server_vm.rancher_api_url}"
     rancher_server_docker_image = "${var.rancher_docker_image}"
     rancher_reverse_proxy_docker_image = "${var.rancher_reverse_proxy_docker_image}"
-    rancher_ssl_key_file_path = "${var.rancher_ssl_key_file_path}"
-    rancher_ssl_certificate_file_path = "${var.rancher_ssl_certificate_file_path}"
   }
 
 
@@ -61,9 +59,12 @@ data "template_file" "rancher-server-provision-script" {
   vars {
     ssh_username = "${var.ssh_username}"
     ssh_port = "22"
+    provision_script = "${file("${path.module}/scripts/local-provision.sh")}"
     rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
     docker_compose_content = "${data.template_file.rancher-server-docker-compose.rendered}"
     docker_daemon_json_content = "${data.template_file.rancher-server-docker-daemon-json.rendered}"
+    rancher_ssl_key_file_path = "${var.rancher_ssl_key_file_path}"
+    rancher_ssl_certificate_file_path = "${var.rancher_ssl_certificate_file_path}"
   }
 }
 
