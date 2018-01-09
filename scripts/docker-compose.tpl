@@ -11,7 +11,7 @@ services:
     container_name: rancher
     environment:
       - CATTLE_API_HOST=${rancher_api_url}
-      - DEFAULT_CATTLE_CATALOG_URL={"catalogs":{"nestle":{"url":"https://github.com/nespresso/rancher-custom-catalog.git","branch":"master"}, "library":{"url":"https://git.rancher.io/rancher-catalog.git","branch":"master"}}}
+      - DEFAULT_CATTLE_CATALOG_URL={"catalogs":{"community":{"url":"https://github.com/rancher/community-catalog.git","branch":"master"},"nestle":{"url":"https://github.com/nespresso/rancher-custom-catalog.git","branch":"master"}, "library":{"url":"https://git.rancher.io/rancher-catalog.git","branch":"master"}}}
     expose:
       - 8080
 
