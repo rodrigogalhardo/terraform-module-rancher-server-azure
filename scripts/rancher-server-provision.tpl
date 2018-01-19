@@ -9,7 +9,7 @@ echo "Creating temporatry files..."
 temp_folder=$(mktemp -d)
 echo '${docker_compose_content}' > $temp_folder/docker-compose.yml
 echo '${docker_daemon_json_content}' > $temp_folder/daemon.json
-echo '${provision_script}' > $temp_folder/local-provision.sh
+echo '${provision_script_content}' > $temp_folder/local-provision.sh
 
 # Copy files to remote
 

@@ -16,6 +16,9 @@ sudo mv ~/key.pem /etc/ssl/
 sudo mv daemon.json /etc/docker
 sudo service docker restart
 
+# Login on registry
+sudo docker login -u ${docker_username} -p ${docker_password} ${docker_repository}
+
 # Start rancher server composition
 sudo /usr/local/bin/docker-compose pull
 sudo /usr/local/bin/docker-compose stop nginx && sudo /usr/local/bin/docker-compose rm nginx &&

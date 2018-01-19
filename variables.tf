@@ -49,6 +49,19 @@ variable "rancher_dns_zone_resource_group" {
   description = "The resource group for the DNS zone"
 }
 
+// Docker repository
+variable "docker_repository" {
+  description = "The docker repository to use to pull images"
+}
+
+variable "docker_username" {
+  description = "The docker username"
+}
+
+variable "docker_password" {
+  description = "The docker password"
+}
+
 variable "docker_insecure_registries" {
   default = "[]",
   description = "List of insecure docker registries"

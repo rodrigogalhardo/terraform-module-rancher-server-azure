@@ -53,13 +53,24 @@ data "template_file" "rancher-server-docker-daemon-json" {
   }
 }
 
+# Template file for docker daemon
+data "template_file" "local-provision-script" {
+  template = "${file("${path.module}/scripts/local-provision.sh.tpl")}"
+  vars {
+    docker_repository = "${var.docker_repository}"
+    docker_username = "${var.docker_username}"
+    docker_password = "${var.docker_password}"
+  }
+}
+
+
 # The template file for rancher server provisioning
 data "template_file" "rancher-server-provision-script" {
   template = "${file("${path.module}/scripts/rancher-server-provision.tpl")}"
   vars {
     ssh_username = "${var.ssh_username}"
     ssh_port = "22"
-    provision_script = "${file("${path.module}/scripts/local-provision.sh")}"
+    provision_script_content = "${data.template_file.local-provision-script.rendered}"
     rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
     docker_compose_content = "${data.template_file.rancher-server-docker-compose.rendered}"
     docker_daemon_json_content = "${data.template_file.rancher-server-docker-daemon-json.rendered}"
