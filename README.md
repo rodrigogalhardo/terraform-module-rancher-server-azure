@@ -9,16 +9,12 @@ Module Input Variables
 
 ## required
 
-- `client_id` - Client ID from Azure service principal
-- `client_secret` - Client secret from Azure service principal
 - `rancher_sever_image_id` - Virtual Machine Image ID for Rancher server
 - `resource_group_name` - Resource group name from Azure
 - `security_group_name` - Security group name on which to add security rules
 - `ssh_public_key_file_path` - Absolute path to public SSH key
 - `ssh_private_key_file_path` - Absolute path to private SSH key
 - `subnet_id` - Subnet ID where to put Rancher server
-- `subscription_id` - Subscription ID from Azure subscription
-- `tenant_id` - Tenant ID from Azure service principal
 - `vnet_address_space` - The address space that is used the virtual network
 
 ## Optional
@@ -36,18 +32,14 @@ Usage
 
 ```hcl
 module "rancher_server" {
-  source = "path/to/module/module-rancher-server"
+  source = "github.com/nespresso/terraform-module-rancher-server-azure"
 
-  client_id = "XXXX"
-  client_secret = "XXXX"
   rancher_sever_image_id = "/subscriptions/XXXX/resourceGroups/resource-group/providers/Microsoft.Compute/images/Rancher-Image"
   resource_group_name = "resource-group"
   resource_prefix_name = "prefix"
   ssh_private_key_file_path = "/home/username/.ssh/id_rsa"
   ssh_public_key_file_path = "/home/username.ssh/id_rsa.pub"
   subnet_id = "/subscriptions/XXXX/resourceGroups/resource-group/providers/Microsoft.Network/virtualNetworks/prefix-vnet/subnets/prefix-subnet"
-  subscription_id = "XXXX"
-  tenant_id = "XXXX"
   user = "username"
 }
 ```

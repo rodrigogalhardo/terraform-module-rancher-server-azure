@@ -1,17 +1,3 @@
-//Connection credentials to Azure API
-variable "client_id" {
-  description = "Client ID from Azure service principal"
-}
-variable "client_secret" {
-  description = "Client secret from Azure service principal"
-}
-variable "tenant_id" {
-  description = "Tenant ID from Azure service principal"
-}
-variable "subscription_id" {
-  description = "Subscription ID from Azure subscription"
-}
-
 //Common
 variable "resource_group_name" {
   description = "Resource group name from Azure"
@@ -74,14 +60,6 @@ variable "rancher_docker_image" {
 
 variable "rancher_reverse_proxy_docker_image" {
   description = "The rerverse proxy docker image"
-}
-
-variable "rancher_access_key" {
-  description = "Rancher server API access key"
-}
-
-variable "rancher_secret_key" {
-  description = "Rancher server API secret key"
 }
 
 variable "rancher_server_private_ip" {

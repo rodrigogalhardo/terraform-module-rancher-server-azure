@@ -1,20 +1,9 @@
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  subscription_id = "${var.subscription_id}"
-  client_id       = "${var.client_id}"
-  client_secret   = "${var.client_secret}"
-  tenant_id       = "${var.tenant_id}"
-}
-
 module "rancher_server_vm" {
 
-  #source = "github.com/nespresso/terraform-module-rancher-server-azure-vm"
-  source = "../terraform-module-rancher-server-azure-vm"
+  source = "github.com/nespresso/terraform-module-rancher-server-azure-vm"
   rancher_domain = "${var.rancher_domain}"
   rancher_dns_zone = "${var.rancher_dns_zone}"
   rancher_dns_zone_resource_group = "${var.rancher_dns_zone_resource_group}"
-  client_id = "${var.client_id}"
-  client_secret = "${var.client_secret}"
   location = "${var.location}"
   rancher_sever_image_id = "${var.rancher_sever_image_id}"
   rancher_server_name = "${var.rancher_server_name}"
@@ -27,8 +16,6 @@ module "rancher_server_vm" {
   ssh_private_key_file_path = "${var.ssh_private_key_file_path}"
   ssh_username = "${var.ssh_username}"
   subnet_id = "${var.subnet_id}"
-  subscription_id = "${var.subscription_id}"
-  tenant_id = "${var.tenant_id}"
   vnet_address_space = "${var.vnet_address_space}"
 }
 
@@ -41,8 +28,6 @@ data "template_file" "rancher-server-docker-compose" {
     rancher_server_docker_image = "${var.rancher_docker_image}"
     rancher_reverse_proxy_docker_image = "${var.rancher_reverse_proxy_docker_image}"
   }
-
-
 }
 
 # Template file for docker daemon
