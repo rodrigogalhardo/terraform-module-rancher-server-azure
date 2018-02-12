@@ -45,37 +45,58 @@ data "template_file" "local-provision-script" {
     docker_repository = "${var.docker_repository}"
     docker_username = "${var.docker_username}"
     docker_password = "${var.docker_password}"
+    rancher_api_url = "${module.rancher_server_vm.rancher_api_url}"
   }
 }
 
-
-# The template file for rancher server provisioning
-data "template_file" "rancher-server-provision-script" {
-  template = "${file("${path.module}/scripts/rancher-server-provision.tpl")}"
-  vars {
-    ssh_username = "${var.ssh_username}"
-    ssh_port = "22"
-    provision_script_content = "${data.template_file.local-provision-script.rendered}"
-    rancher_server_ip = "${module.rancher_server_vm.rancher_server_ip}"
-    docker_compose_content = "${data.template_file.rancher-server-docker-compose.rendered}"
-    docker_daemon_json_content = "${data.template_file.rancher-server-docker-daemon-json.rendered}"
-    rancher_ssl_key_file_path = "${var.rancher_ssl_key_file_path}"
-    rancher_ssl_certificate_file_path = "${var.rancher_ssl_certificate_file_path}"
-  }
-}
-
+# Copy files and provision machine
 resource "null_resource" "rancher-server-provision" {
   triggers {
     rancher_server_id = "${module.rancher_server_vm.rancher_server_id}"
   }
 
-  provisioner "local-exec" {
-    command = "echo ${data.template_file.rancher-server-provision-script.rendered}"
+  connection {
+    host = "${module.rancher_server_vm.rancher_server_ip}"
+    private_key = "${file(var.ssh_private_key_file_path)}"
+    type = "ssh"
+    user = "${var.ssh_username}"
   }
 
+  provisioner "file" {
+    source = "${var.rancher_ssl_key_file_path}"
+    destination = "/tmp/key.pem"
+  }
+
+  provisioner "file" {
+    source = "${var.rancher_ssl_certificate_file_path}"
+    destination = "/tmp/cert.crt"
+  }
+
+  provisioner "file" {
+    content = "${data.template_file.rancher-server-docker-compose.rendered}"
+    destination = "~/docker-compose.yml"
+  }
+
+  provisioner "file" {
+    content = "${data.template_file.rancher-server-docker-daemon-json.rendered}"
+    destination = "/tmp/daemon.json"
+  }
+
+  provisioner "file" {
+    content = "${data.template_file.local-provision-script.rendered}"
+    destination = "~/local-provision.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mv /tmp/cert.crt /tmp/key.pem /etc/ssl/",
+      "sudo mv /tmp/daemon.json /etc/docker/daemon.json",
+      "chmod +x ~/local-provision.sh",
+      "~/local-provision.sh"
+    ]
+  }
 
   depends_on = [
-    "data.template_file.rancher-server-provision-script",
     "data.template_file.rancher-server-docker-compose",
     "data.template_file.rancher-server-docker-daemon-json"
   ]

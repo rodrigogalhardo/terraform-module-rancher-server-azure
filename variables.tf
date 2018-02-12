@@ -23,34 +23,34 @@ variable "rancher_server_name" {
 
 // External DNS
 variable "rancher_domain" {
-  description = "The rancher domain for the DNS zone"
+  description = "Rancher domain"
 }
 
 // DNS zone
 variable "rancher_dns_zone" {
-  description = "The rancher DNS zone"
+  description = "Rancher DNS zone"
 }
 
 variable "rancher_dns_zone_resource_group" {
-  description = "The resource group for the DNS zone"
+  description = "Resource group in which the DNS Zone is"
 }
 
 // Docker repository
 variable "docker_repository" {
-  description = "The docker repository to use to pull images"
+  description = "Docker repository url"
 }
 
 variable "docker_username" {
-  description = "The docker username"
+  description = "Docker repository username"
 }
 
 variable "docker_password" {
-  description = "The docker password"
+  description = "Docker repository password"
 }
 
 variable "docker_insecure_registries" {
   default = "[]",
-  description = "List of insecure docker registries"
+  description = "List of Docker repository unsecure registries"
 }
 
 variable "rancher_docker_image" {
@@ -88,9 +88,12 @@ variable "ssh_username" {
 variable "rancher_ssl_certificate_name" {
   default = "default"
 }
-
-variable "rancher_ssl_certificate_file_path" {}
-variable "rancher_ssl_key_file_path" {}
+variable "rancher_ssl_certificate_file_path" {
+  description = "Rancher SSL certificate file path"
+}
+variable "rancher_ssl_key_file_path" {
+  description = "Rancher SSL key file path"
+}
 
 //Network
 variable "security_group_name" {
